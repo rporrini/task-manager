@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo the test works"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/rporrini/task-manager/issues"
   },
-  "homepage": "https://github.com/rporrini/task-manager#readme"
+  "homepage": "https://github.com/rporrini/task-manager#readme",
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.0.0"
+  }
 }
