@@ -11,34 +11,29 @@ describe('a process', () => {
   it('should exist', () => {
     return expect(process).not.to.be.undefined
   })
-  it('has no PID by default', () => {
-    const pid = process().pid
-
-    return expect(pid).to.be.undefined
-  })
   it('has a PID once started', () => {
     const startedProcess = process('echo').start()
 
-    return expect(startedProcess.pid).to.be.greaterThan(0)
+    return expect(startedProcess.pid()).to.be.greaterThan(0)
   })
   it('should collect an output', async () => {
     const echo = process('echo test').start()
 
     await termination()
 
-    return expect(echo.stdout).to.be.contains('test')
+    return expect(echo.stdout()).to.be.contains('test')
   })
   it('should spawn a real command', async () => {
     const echo = process('echo print me').start()
 
     await termination()
 
-    return expect(echo.stdout).to.contains('print me')
+    return expect(echo.stdout()).to.contains('print me')
   })
   it('should have a priority', () => {
     const echo = process('echo').withPriority('low').start()
 
-    return expect(echo.priority).to.be.equal('low')
+    return expect(echo.priority()).to.be.equal('low')
   })
   it('should be killable', async () => {
     const delayedEco = process('sleep 0.3 && echo test finished').start()
@@ -47,6 +42,6 @@ describe('a process', () => {
 
     await termination(halfSecond)
 
-    return expect(delayedEco.stdout).not.to.contain('test finished')
+    return expect(delayedEco.stdout()).not.to.contain('test finished')
   })
 })
