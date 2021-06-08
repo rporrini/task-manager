@@ -1,22 +1,19 @@
 const { exec } = require('child_process')
 
-const runnableProcess = (command = {}, output = {}) => ({
+const collect = output => (_, printedOutput) => {
+  output.stdout = printedOutput
+}
+
+const runnableProcess = command => ({
 
   command: commandString => runnableProcess(commandString),
 
   start: () => {
     const output = {}
-    const c = exec(command, {}, (_, printedOutput) => {
-      output.stdout = printedOutput
-    })
-    output.pid = c.pid
-    return runnableProcess(command, output)
-  },
-
-  pid: () => output.pid,
-
-  output: () => output.stdout
-
+    const process = exec(command, {}, collect(output))
+    output.pid = process.pid
+    return output
+  }
 })
 
 module.exports = { process: runnableProcess }
