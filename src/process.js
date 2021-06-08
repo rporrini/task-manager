@@ -11,6 +11,7 @@ const runnableProcess = (command, priority) => ({
   start: () => {
     const output = {}
     const process = exec(command, {}, collect(output))
+    output.kill = () => process.kill('SIGKILL')
     output.pid = process.pid
     output.priority = priority
     return output

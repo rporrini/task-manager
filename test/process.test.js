@@ -5,6 +5,8 @@ const termination = (fiveMillis = 5) => new Promise((resolve) => {
   setTimeout(resolve, fiveMillis)
 })
 
+const halfSecond = 500
+
 describe('a process', () => {
   it('should exist', () => {
     return expect(process).not.to.be.undefined
@@ -34,8 +36,17 @@ describe('a process', () => {
     return expect(echo.stdout).to.be.contains('print me')
   })
   it('should have a priority', () => {
-    const p = process('echo').withPriority('low').start()
+    const echo = process('echo').withPriority('low').start()
 
-    return expect(p.priority).to.be.equal('low')
+    return expect(echo.priority).to.be.equal('low')
+  })
+  it('should be killable', async () => {
+    const delayedEco = process('sleep 0.3 && echo test finished').start()
+
+    delayedEco.kill()
+
+    await termination(halfSecond)
+
+    return expect(delayedEco.stdout).not.to.contain('test finished')
   })
 })
