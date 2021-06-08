@@ -33,7 +33,7 @@ describe('a process', () => {
 
     await termination()
 
-    return expect(echo.stdout).to.be.contains('print me')
+    return expect(echo.stdout).to.contains('print me')
   })
   it('should have a priority', () => {
     const echo = process('echo').withPriority('low').start()
