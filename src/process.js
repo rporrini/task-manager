@@ -4,14 +4,15 @@ const collect = output => (_, printedOutput) => {
   output.stdout = printedOutput
 }
 
-const runnableProcess = command => ({
+const runnableProcess = (command, priority) => ({
 
-  command: commandString => runnableProcess(commandString),
+  withPriority: priority => runnableProcess(command, priority),
 
   start: () => {
     const output = {}
     const process = exec(command, {}, collect(output))
     output.pid = process.pid
+    output.priority = priority
     return output
   }
 })
