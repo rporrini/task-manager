@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 const { TaskManager } = require('../src/TaskManager')
-const { Process } = require('../src/Process')
+const { ProcessTestDouble } = require('./ProcessTestDouble')
 
 describe('the task manager', () => {
   it('should exist', () => {
@@ -9,12 +9,12 @@ describe('the task manager', () => {
     return expect(manager).not.to.be.undefined
   })
   it('should track a process', () => {
-    const manager = new TaskManager().add(new Process('echo').start())
+    const manager = new TaskManager().add(new ProcessTestDouble().currentlyRunning())
 
     return expect(manager.list()).not.to.be.empty
   })
   it('should track running processes only', () => {
-    const yetToStartedProcess = new Process()
+    const yetToStartedProcess = new ProcessTestDouble().readyToStart()
 
     const manager = new TaskManager().add(yetToStartedProcess)
 
