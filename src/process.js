@@ -1,11 +1,12 @@
 const { exec } = require('child_process')
 
-const attachingStandartOutputTo = output => (_, printedOutput) => {
-  output.stdout = () => printedOutput
-}
+const toFunction = value => () => value
 
+const attachingStandartOutputTo = output => (_, printedOutput) => {
+  output.stdout = toFunction(printedOutput)
+}
 const proxyKillFunctionOf = process => () => process.kill('SIGKILL')
-const proxyPidOf = process => () => process.pid
+const proxyPidOf = process => toFunction(process.pid)
 
 const runnableProcess = (command, priority) => ({
 
