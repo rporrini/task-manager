@@ -3,7 +3,7 @@ const { SortBy } = require('../src/SortBy')
 const { TaskManager } = require('../src/TaskManager')
 const { ProcessTestDouble } = require('./ProcessTestDouble')
 
-const extractPrioritiesFrom = processes => processes.map(p => ({ priority: p.priority() }))
+const pluckPropertyFrom = (property, processes) => processes.map(p => ({ [property]: p[property]() }))
 
 describe('the task manager', () => {
   it('should exist', () => {
@@ -37,11 +37,22 @@ describe('the task manager', () => {
     const higherPriority = new ProcessTestDouble().currentlyRunning().withPriority(1)
     const lowerPriority = new ProcessTestDouble().currentlyRunning().withPriority(0)
 
-    const processes = extractPrioritiesFrom(new TaskManager()
+    const processes = pluckPropertyFrom('priority', new TaskManager()
       .add(higherPriority)
       .add(lowerPriority)
       .list(SortBy.priority))
 
     return expect(processes).to.be.eql([{ priority: 0 }, { priority: 1 }])
+  })
+  it('should not modify the order of the list of process when performing a sort operation', () => {
+    const first = new ProcessTestDouble().currentlyRunning(10).withPriority(1)
+    const second = new ProcessTestDouble().currentlyRunning(20).withPriority(0)
+
+    const manager = new TaskManager().add(first).add(second)
+    manager.list(SortBy.priority)
+
+    const processes = pluckPropertyFrom('pid', manager.list())
+
+    return expect(processes).to.be.eql([{ pid: 10 }, { pid: 20 }])
   })
 })
