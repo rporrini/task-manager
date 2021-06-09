@@ -14,5 +14,10 @@ class ProcessTestDouble {
     this.priority = () => priority
     return this
   }
+
+  kill () {
+    this.wasKilled = () => true
+    return this
+  }
 }
 exports.ProcessTestDouble = ProcessTestDouble

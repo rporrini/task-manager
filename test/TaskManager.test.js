@@ -1,5 +1,6 @@
 const { expect } = require('chai')
 const { SortBy } = require('../src/SortBy')
+const { Select } = require('../src/Select')
 const { TaskManager } = require('../src/TaskManager')
 const { ProcessTestDouble } = require('./ProcessTestDouble')
 
@@ -54,5 +55,12 @@ describe('TaskManager', () => {
     const processes = pluckPropertyFrom('pid', manager.list())
 
     return expect(processes).to.be.eql([{ pid: 10 }, { pid: 20 }])
+  })
+  it('should allow the killing of a process', () => {
+    const process = new ProcessTestDouble().currentlyRunning()
+
+    new TaskManager().add(process).kill(Select.all)
+
+    return expect(process.wasKilled()).to.be.true
   })
 })
