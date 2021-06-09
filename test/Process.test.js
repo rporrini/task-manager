@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { Process } = require('../src/process')
+const { Process } = require('../src/Process')
 
 const termination = (fiveMillis = 5) => new Promise((resolve) => {
   setTimeout(resolve, fiveMillis)
