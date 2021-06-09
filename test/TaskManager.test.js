@@ -44,7 +44,7 @@ describe('the task manager', () => {
 
     return expect(processes).to.be.eql([{ priority: 0 }, { priority: 1 }])
   })
-  it('should not modify the order of the list of process when performing a sort operation', () => {
+  it('should not modify the original order of the list of process when performing a sort operation', () => {
     const first = new ProcessTestDouble().currentlyRunning(10).withPriority(1)
     const second = new ProcessTestDouble().currentlyRunning(20).withPriority(0)
 
