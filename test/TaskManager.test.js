@@ -1,6 +1,9 @@
 const { expect } = require('chai')
+const { SortByPriority } = require('../src/SortByPriority')
 const { TaskManager } = require('../src/TaskManager')
 const { ProcessTestDouble } = require('./ProcessTestDouble')
+
+const extractPrioritiesFrom = processes => processes.map(p => ({ priority: p.priority() }))
 
 describe('the task manager', () => {
   it('should exist', () => {
@@ -29,5 +32,16 @@ describe('the task manager', () => {
     const manager = new TaskManager()
 
     return expect(manager.list()).to.be.eql([])
+  })
+  it('should allow to sort the list by a specified criteria', () => {
+    const higherPriority = new ProcessTestDouble().currentlyRunning().withPriority(1)
+    const lowerPriority = new ProcessTestDouble().currentlyRunning().withPriority(0)
+
+    const processes = extractPrioritiesFrom(new TaskManager()
+      .add(higherPriority)
+      .add(lowerPriority)
+      .list(SortByPriority))
+
+    return expect(processes).to.be.eql([{ priority: 0 }, { priority: 1 }])
   })
 })

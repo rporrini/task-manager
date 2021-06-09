@@ -8,8 +8,8 @@ class TaskManager {
     return this
   }
 
-  list () {
-    return this._processes.filter(p => p.isRunning())
+  list (sortCriteria) {
+    return this._processes.filter(p => p.isRunning()).sort(sortCriteria)
   }
 }
 module.exports = { TaskManager }
