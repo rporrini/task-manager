@@ -44,4 +44,28 @@ describe('a process', () => {
 
     return expect(delayedEco.stdout()).not.to.contain('test finished')
   })
+  it('should not be running once created', () => {
+    return expect(new Process().isRunning()).to.be.false
+  })
+  it('should be running once started', () => {
+    const runningProcess = new Process('echo').start()
+
+    return expect(runningProcess.isRunning()).to.be.true
+  })
+  it('shuold not be running once terminated', async () => {
+    const runningProcess = new Process('echo').start()
+
+    await termination()
+
+    return expect(runningProcess.isRunning()).to.be.false
+  })
+
+  it('shuold not be running once killed', async () => {
+    const runningProcess = new Process('sleep 1').start()
+    runningProcess.kill()
+
+    await termination(halfSecond)
+
+    return expect(runningProcess.isRunning()).to.be.false
+  })
 })
