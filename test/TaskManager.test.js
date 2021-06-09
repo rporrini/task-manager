@@ -9,11 +9,11 @@ describe('the task manager', () => {
     return expect(manager).not.to.be.undefined
   })
   it('should track a process', () => {
-    const manager = new TaskManager().add({})
+    const manager = new TaskManager().add(new Process('echo').start())
 
     return expect(manager.list()).not.to.be.empty
   })
-  xit('should track running processes only', () => {
+  it('should track running processes only', () => {
     const yetToStartedProcess = new Process('sleep 10')
 
     const manager = new TaskManager().add(yetToStartedProcess)

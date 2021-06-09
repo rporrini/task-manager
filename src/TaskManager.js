@@ -9,7 +9,7 @@ class TaskManager {
   }
 
   list () {
-    return this._processes
+    return this._processes.filter(p => p.isRunning())
   }
 }
 module.exports = { TaskManager }
