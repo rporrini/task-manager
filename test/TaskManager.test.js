@@ -14,7 +14,7 @@ describe('the task manager', () => {
     return expect(manager.list()).not.to.be.empty
   })
   it('should track running processes only', () => {
-    const yetToStartedProcess = new Process('sleep 10')
+    const yetToStartedProcess = new Process()
 
     const manager = new TaskManager().add(yetToStartedProcess)
 
