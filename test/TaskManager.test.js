@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { SortByPriority } = require('../src/SortByPriority')
+const { SortBy } = require('../src/SortBy')
 const { TaskManager } = require('../src/TaskManager')
 const { ProcessTestDouble } = require('./ProcessTestDouble')
 
@@ -40,7 +40,7 @@ describe('the task manager', () => {
     const processes = extractPrioritiesFrom(new TaskManager()
       .add(higherPriority)
       .add(lowerPriority)
-      .list(SortByPriority))
+      .list(SortBy.priority))
 
     return expect(processes).to.be.eql([{ priority: 0 }, { priority: 1 }])
   })
