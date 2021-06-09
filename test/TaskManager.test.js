@@ -7,6 +7,11 @@ describe('the task manager', () => {
 
     return expect(manager).not.to.be.undefined
   })
+  it('should track a process', () => {
+    const manager = new TaskManager().add({})
+
+    return expect(manager.list()).not.to.be.empty
+  })
   it('should expose a list of processes', () => {
     const manager = new TaskManager()
 
