@@ -1,24 +1,37 @@
 const { exec } = require('child_process')
 
-const toFunction = value => () => value
-
-const attachingStandartOutputTo = output => (_, printedOutput) => {
-  output.stdout = toFunction(printedOutput)
-}
-const proxyKillFunctionOf = process => () => process.kill('SIGKILL')
-const proxyPidOf = process => toFunction(process.pid)
-
-const runnableProcess = (command, priority) => ({
-
-  withPriority: priority => runnableProcess(command, priority),
-
-  start: () => {
-    const output = { priority: () => priority }
-    const process = exec(command, {}, attachingStandartOutputTo(output))
-    output.kill = proxyKillFunctionOf(process)
-    output.pid = proxyPidOf(process)
-    return output
+class Process {
+  constructor (command) {
+    this._command = command
   }
-})
 
-module.exports = { process: runnableProcess }
+  start () {
+    this._process = exec(this._command, {}, (_, printedOutput) => {
+      this._stdout = printedOutput
+    })
+    return this
+  }
+
+  withPriority (priority) {
+    this._priority = priority
+    return this
+  }
+
+  priority () {
+    return this._priority
+  }
+
+  kill () {
+    return this._process.kill('SIGKILL')
+  }
+
+  pid () {
+    return this._process.pid
+  }
+
+  stdout () {
+    return this._stdout
+  }
+}
+
+module.exports = { Process }
