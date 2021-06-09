@@ -5,7 +5,7 @@ const { ProcessTestDouble } = require('./ProcessTestDouble')
 
 const pluckPropertyFrom = (property, processes) => processes.map(p => ({ [property]: p[property]() }))
 
-describe('the task manager', () => {
+describe('TaskManager', () => {
   it('should exist', () => {
     const manager = new TaskManager()
 

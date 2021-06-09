@@ -1,3 +1,5 @@
+const { Filter } = require('./Filter')
+
 class TaskManager {
   constructor () {
     this._processes = []
@@ -9,7 +11,7 @@ class TaskManager {
   }
 
   list (sortCriteria) {
-    return this._processes.filter(p => p.isRunning()).sort(sortCriteria)
+    return this._processes.filter(Filter.running).sort(sortCriteria)
   }
 }
 module.exports = { TaskManager }

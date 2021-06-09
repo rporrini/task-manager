@@ -7,7 +7,7 @@ const termination = (fiveMillis = 5) => new Promise((resolve) => {
 
 const halfSecond = 500
 
-describe('a process', () => {
+describe('Process', () => {
   it('should exist', () => {
     return expect(new Process()).not.to.be.undefined
   })
