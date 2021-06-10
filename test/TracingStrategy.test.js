@@ -6,15 +6,11 @@ const pluckPropertyFrom = (property, processes) => processes.map(p => ({ [proper
 
 describe('TracingStrategy.fixedCapacity', () => {
   it('should not accept processes by default', () => {
-    const strategy = TracingStrategy.fixedCapacity()
+    const processes = []
 
-    return expect(() => strategy([], {})).to.throw()
-  })
+    TracingStrategy.fixedCapacity()(processes, {})
 
-  it('should accept processes if there is enough capacity', () => {
-    const strategy = TracingStrategy.fixedCapacity(1)
-
-    return expect(() => strategy([], {})).not.to.throw()
+    return expect(processes).to.be.empty
   })
 
   it('should add a process to the list', () => {
@@ -29,12 +25,9 @@ describe('TracingStrategy.fixedCapacity', () => {
     const processes = []
     const strategy = TracingStrategy.fixedCapacity(1)
 
-    const addingTwoProcesses = () => {
-      strategy(processes, {})
-      strategy(processes, {})
-    }
+    strategy(processes, {})
+    strategy(processes, {})
 
-    expect(addingTwoProcesses).to.throw()
     expect(processes).to.have.length(1)
   })
 })
@@ -76,5 +69,66 @@ describe('TracingStrategy.fifo', () => {
     strategy(processes, new ProcessTestDouble().currentlyRunning(456))
 
     return expect(firstIn.wasKilled()).to.be.true
+  })
+})
+
+describe('TracingStrategy.priorityBased', () => {
+  it('should not accept new processes by default', () => {
+    const processes = []
+
+    TracingStrategy.priorityBased()(processes, {})
+
+    return expect(processes).to.be.empty
+  })
+
+  it('should accept new processes when maximum capacity is not reached', () => {
+    const processes = []
+
+    TracingStrategy.priorityBased(1)(processes, {})
+
+    return expect(processes).not.to.be.empty
+  })
+  it('should remove from the processes list the oldest process with lower priority', () => {
+    const processes = []
+    const strategy = TracingStrategy.priorityBased(2)
+
+    strategy(processes, new ProcessTestDouble().currentlyRunning(123).withPriority(2))
+    strategy(processes, new ProcessTestDouble().currentlyRunning(456).withPriority(1))
+    strategy(processes, new ProcessTestDouble().currentlyRunning(789).withPriority(2))
+
+    expect(pluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 123 }, { pid: 789 }])
+  })
+
+  it('should not remove from the processes list a process with the same priority', () => {
+    const processes = []
+    const strategy = TracingStrategy.priorityBased(2)
+
+    strategy(processes, new ProcessTestDouble().currentlyRunning(123).withPriority(2))
+    strategy(processes, new ProcessTestDouble().currentlyRunning(456).withPriority(1))
+    strategy(processes, new ProcessTestDouble().currentlyRunning(789).withPriority(1))
+
+    expect(pluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 123 }, { pid: 456 }])
+  })
+
+  it('should remove from the processes list process with lowest priority', () => {
+    const processes = []
+    const strategy = TracingStrategy.priorityBased(3)
+
+    strategy(processes, new ProcessTestDouble().currentlyRunning(123).withPriority(2))
+    strategy(processes, new ProcessTestDouble().currentlyRunning(456).withPriority(1))
+    strategy(processes, new ProcessTestDouble().currentlyRunning(789).withPriority(1))
+    strategy(processes, new ProcessTestDouble().currentlyRunning(999).withPriority(3))
+
+    expect(pluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 123 }, { pid: 789 }, { pid: 999 }])
+  })
+
+  it('should not add a process lower priority processes', () => {
+    const processes = []
+    const strategy = TracingStrategy.priorityBased(1)
+
+    strategy(processes, new ProcessTestDouble().currentlyRunning(123).withPriority(2))
+    strategy(processes, new ProcessTestDouble().currentlyRunning(456).withPriority(1))
+
+    expect(pluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 123 }])
   })
 })
