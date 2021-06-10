@@ -1,4 +1,4 @@
-const alwaysAccept = (processes, process) => {
+const alwaysAccept = () => (processes, process) => {
   processes.push(process)
 }
 
