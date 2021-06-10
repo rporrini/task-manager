@@ -7,7 +7,16 @@ const fixedCapacity = (capacity = 0) => (processes, process) => {
   processes.push(process)
 }
 
+const fifo = (capacity = 0) => (processes, process) => {
+  if (capacity === 0) return
+  if (capacity === processes.length) {
+    processes.shift().kill()
+  }
+  processes.push(process)
+}
+
 exports.TracingStrategy = {
   alwaysAccept,
-  fixedCapacity
+  fixedCapacity,
+  fifo
 }
