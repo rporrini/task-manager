@@ -20,7 +20,9 @@ const priorityBased = (capacity = 0) => (processes, process) => {
   if (capacity === processes.length) {
     const doNotDeleteAnything = { priority: Infinity, index: -1 }
     const toDelete = processes.reduce((toDelete, currentProcess, index) => {
-      if (currentProcess.priority() < process.priority() && currentProcess.priority() < toDelete.priority) {
+      const currentProcessHasLowerPriority = currentProcess.priority() < process.priority()
+      const currentProcessHasLowestPriority = currentProcess.priority() < toDelete.priority
+      if (currentProcessHasLowerPriority && currentProcessHasLowestPriority) {
         return {
           priority: currentProcess.priority(),
           index
