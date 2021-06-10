@@ -1,6 +1,7 @@
 const { expect } = require('chai')
 const { SortBy } = require('../src/SortBy')
 const { Select } = require('../src/Select')
+const { TracingStrategy } = require('../src/TracingStrategy')
 const { TaskManager } = require('../src/TaskManager')
 const { ProcessTestDouble } = require('./ProcessTestDouble')
 
@@ -13,14 +14,14 @@ describe('TaskManager', () => {
     return expect(manager).not.to.be.undefined
   })
   it('should track a process', () => {
-    const manager = new TaskManager().add(new ProcessTestDouble().currentlyRunning())
+    const manager = new TaskManager(TracingStrategy.alwaysAccept).add(new ProcessTestDouble().currentlyRunning())
 
     return expect(manager.list()).not.to.be.empty
   })
   it('should track running processes only', () => {
     const yetToStartedProcess = new ProcessTestDouble().readyToStart()
 
-    const manager = new TaskManager().add(yetToStartedProcess)
+    const manager = new TaskManager(TracingStrategy.alwaysAccept).add(yetToStartedProcess)
 
     return expect(manager.list()).to.be.empty
   })
@@ -38,7 +39,7 @@ describe('TaskManager', () => {
     const higherPriority = new ProcessTestDouble().currentlyRunning().withPriority(1)
     const lowerPriority = new ProcessTestDouble().currentlyRunning().withPriority(0)
 
-    const processes = pluckPropertyFrom('priority', new TaskManager()
+    const processes = pluckPropertyFrom('priority', new TaskManager(TracingStrategy.alwaysAccept)
       .add(higherPriority)
       .add(lowerPriority)
       .list(SortBy.priority))
@@ -49,7 +50,9 @@ describe('TaskManager', () => {
     const first = new ProcessTestDouble().currentlyRunning(10).withPriority(1)
     const second = new ProcessTestDouble().currentlyRunning(20).withPriority(0)
 
-    const manager = new TaskManager().add(first).add(second)
+    const manager = new TaskManager(TracingStrategy.alwaysAccept)
+      .add(first)
+      .add(second)
     manager.list(SortBy.priority)
 
     const processes = pluckPropertyFrom('pid', manager.list())
@@ -59,7 +62,7 @@ describe('TaskManager', () => {
   it('should allow the killing of a process', () => {
     const process = new ProcessTestDouble().currentlyRunning()
 
-    new TaskManager().add(process).kill(Select.all)
+    new TaskManager(TracingStrategy.alwaysAccept).add(process).kill(Select.all)
 
     return expect(process.wasKilled()).to.be.true
   })

@@ -1,12 +1,13 @@
 const { Select } = require('./Select')
 
 class TaskManager {
-  constructor () {
+  constructor (tracingStrategy) {
     this._processes = []
+    this._processesTracingStrategy = tracingStrategy
   }
 
   add (process) {
-    this._processes.push(process)
+    this._processesTracingStrategy(this._processes, process)
     return this
   }
 
