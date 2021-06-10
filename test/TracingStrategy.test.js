@@ -1,8 +1,7 @@
 const { expect } = require('chai')
 const { TracingStrategy } = require('../src/TracingStrategy')
+const { PluckPropertyFrom } = require('./PluckPropertyFrom')
 const { ProcessTestDouble } = require('./ProcessTestDouble')
-
-const pluckPropertyFrom = (property, processes) => processes.map(p => ({ [property]: p[property]() }))
 
 describe('TracingStrategy.fixedCapacity', () => {
   it('should not accept processes by default', () => {
@@ -57,7 +56,7 @@ describe('TracingStrategy.fifo', () => {
     strategy(processes, new ProcessTestDouble().currentlyRunning(456))
     strategy(processes, new ProcessTestDouble().currentlyRunning(789))
 
-    expect(pluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 456 }, { pid: 789 }])
+    expect(PluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 456 }, { pid: 789 }])
   })
 
   it('should kill the oldest process when capacity is reached', () => {
@@ -96,7 +95,7 @@ describe('TracingStrategy.priorityBased', () => {
     strategy(processes, new ProcessTestDouble().currentlyRunning(456).withPriority(1))
     strategy(processes, new ProcessTestDouble().currentlyRunning(789).withPriority(2))
 
-    expect(pluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 123 }, { pid: 789 }])
+    expect(PluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 123 }, { pid: 789 }])
   })
 
   it('should not remove from the processes list a process with the same priority', () => {
@@ -107,7 +106,7 @@ describe('TracingStrategy.priorityBased', () => {
     strategy(processes, new ProcessTestDouble().currentlyRunning(456).withPriority(1))
     strategy(processes, new ProcessTestDouble().currentlyRunning(789).withPriority(1))
 
-    expect(pluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 123 }, { pid: 456 }])
+    expect(PluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 123 }, { pid: 456 }])
   })
 
   it('should remove from the processes list process with lowest priority', () => {
@@ -119,7 +118,7 @@ describe('TracingStrategy.priorityBased', () => {
     strategy(processes, new ProcessTestDouble().currentlyRunning(789).withPriority(1))
     strategy(processes, new ProcessTestDouble().currentlyRunning(999).withPriority(3))
 
-    expect(pluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 123 }, { pid: 789 }, { pid: 999 }])
+    expect(PluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 123 }, { pid: 789 }, { pid: 999 }])
   })
 
   it('should not add a process lower priority processes', () => {
@@ -129,6 +128,6 @@ describe('TracingStrategy.priorityBased', () => {
     strategy(processes, new ProcessTestDouble().currentlyRunning(123).withPriority(2))
     strategy(processes, new ProcessTestDouble().currentlyRunning(456).withPriority(1))
 
-    expect(pluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 123 }])
+    expect(PluckPropertyFrom('pid', processes)).to.be.eql([{ pid: 123 }])
   })
 })

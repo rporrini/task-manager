@@ -18,20 +18,17 @@ const fifo = (capacity = 0) => (processes, process) => {
 const priorityBased = (capacity = 0) => (processes, process) => {
   if (capacity === 0) return
   if (capacity === processes.length) {
-    const doNotDeleteAnything = { priority: Infinity, index: -1 }
-    const toDelete = processes.reduce((toDelete, currentProcess, index) => {
-      const currentProcessHasLowerPriority = currentProcess.priority() < process.priority()
-      const currentProcessHasLowestPriority = currentProcess.priority() < toDelete.priority
-      if (currentProcessHasLowerPriority && currentProcessHasLowestPriority) {
-        return {
-          priority: currentProcess.priority(),
-          index
-        }
+    let indexToDelete = -1
+    let lowestPrioritySoFar = Infinity
+    for (let i = 0; i < processes.length; i++) {
+      const candidate = processes[i]
+      if (candidate.priority() < process.priority() && candidate.priority() < lowestPrioritySoFar) {
+        indexToDelete = i
+        lowestPrioritySoFar = candidate.priority()
       }
-      return toDelete
-    }, doNotDeleteAnything)
-    if (toDelete.index === doNotDeleteAnything.index) return
-    else processes.splice(toDelete.index, 1)
+    }
+    if (indexToDelete > -1) processes.splice(indexToDelete, 1)
+    else return
   }
   processes.push(process)
 }

@@ -4,8 +4,7 @@ const { Select } = require('../src/Select')
 const { TracingStrategy } = require('../src/TracingStrategy')
 const { TaskManager } = require('../src/TaskManager')
 const { ProcessTestDouble } = require('./ProcessTestDouble')
-
-const pluckPropertyFrom = (property, processes) => processes.map(p => ({ [property]: p[property]() }))
+const { PluckPropertyFrom } = require('./PluckPropertyFrom')
 
 describe('TaskManager', () => {
   it('should exist', () => {
@@ -39,7 +38,7 @@ describe('TaskManager', () => {
     const higherPriority = new ProcessTestDouble().currentlyRunning().withPriority(1)
     const lowerPriority = new ProcessTestDouble().currentlyRunning().withPriority(0)
 
-    const processes = pluckPropertyFrom('priority', new TaskManager(TracingStrategy.alwaysAccept())
+    const processes = PluckPropertyFrom('priority', new TaskManager(TracingStrategy.alwaysAccept())
       .add(higherPriority)
       .add(lowerPriority)
       .list(SortBy.priority))
@@ -55,7 +54,7 @@ describe('TaskManager', () => {
       .add(second)
     manager.list(SortBy.priority)
 
-    const processes = pluckPropertyFrom('pid', manager.list())
+    const processes = PluckPropertyFrom('pid', manager.list())
 
     return expect(processes).to.be.eql([{ pid: 10 }, { pid: 20 }])
   })
