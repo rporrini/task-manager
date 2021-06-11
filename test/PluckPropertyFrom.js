@@ -1,4 +1,4 @@
-function pluckPropertyFrom (property, processes) {
+function PluckPropertyFrom (property, processes) {
   return processes.map(p => ({ [property]: p[property]() }))
 }
-exports.PluckPropertyFrom = pluckPropertyFrom
+module.exports = { PluckPropertyFrom }

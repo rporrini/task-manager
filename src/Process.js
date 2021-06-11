@@ -45,8 +45,8 @@ class Process {
     return this._running
   }
 
-  onTermination (func) {
-    this._observeTermination = func
+  onTermination (callback) {
+    this._observeTermination = callback
     return this
   }
 }

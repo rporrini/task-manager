@@ -29,4 +29,5 @@ class ProcessTestDouble {
     this._notifyTermination = callback
   }
 }
-exports.ProcessTestDouble = ProcessTestDouble
+
+module.exports = { ProcessTestDouble }

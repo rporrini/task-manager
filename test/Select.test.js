@@ -38,7 +38,7 @@ describe('Select.priority', () => {
 
     return expect(SelectPriority(process)).to.be.false
   })
-  it('should select a process with the right pid', () => {
+  it('should select a process with the right priority', () => {
     const process = new ProcessTestDouble().withPriority(0)
 
     const SelectPriority = Select.priority(0)
