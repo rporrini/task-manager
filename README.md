@@ -15,4 +15,4 @@
 ## Comments
 
 * [Demo.js](https://github.com/rporrini/task-manager/blob/master/src/Demo.js) includes an example usage of `TaskManager`, the main module of the application. To run it, use the command `npm run demo`.
-* In-depth example on how to use the module of the whole codebase can be found in their respective [unit-test suites](https://github.com/rporrini/task-manager/tree/master/test).
+* In-depth examples on how to use the module of the whole codebase can be found in their respective [unit-test suites](https://github.com/rporrini/task-manager/tree/master/test).
