@@ -22,10 +22,10 @@ const priorityBased = (capacity = 0) => (processes, process) => {
     let indexToDelete = -1
     let lowestPrioritySoFar = Infinity
     for (let i = 0; i < processes.length; i++) {
-      const candidate = processes[i]
-      if (candidate.priority() < process.priority() && candidate.priority() < lowestPrioritySoFar) {
+      const candidatePriority = processes[i].priority()
+      if (candidatePriority < process.priority() && candidatePriority < lowestPrioritySoFar) {
         indexToDelete = i
-        lowestPrioritySoFar = candidate.priority()
+        lowestPrioritySoFar = candidatePriority
       }
     }
     if (indexToDelete > -1) processes.splice(indexToDelete, 1)
