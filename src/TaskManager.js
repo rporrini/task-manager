@@ -8,11 +8,15 @@ class TaskManager {
 
   add (process) {
     this._processesTracingStrategy(this._processes, process)
+    process.onTermination(terminatedProcess => {
+      const indexToDelete = this._processes.findIndex(p => p.pid() === terminatedProcess.pid())
+      if (indexToDelete > -1) this._processes.splice(indexToDelete, 1)
+    })
     return this
   }
 
   list (sortCriterion) {
-    return this._processes.filter(Select.running).sort(sortCriterion)
+    return this._processes.filter(Select.all).sort(sortCriterion)
   }
 
   kill (selectionCriterion) {

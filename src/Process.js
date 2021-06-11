@@ -15,7 +15,7 @@ class Process {
     this._process = exec(this._command, {}, accumulateOuput(this))
     const subscribe = subscribeToExit(this)
     subscribe(signalIsNotRunning(this))
-    subscribe(this._observeTermination)
+    subscribe(() => { this._observeTermination(this) })
     this._running = true
     return this
   }
@@ -46,7 +46,7 @@ class Process {
   }
 
   onTermination (func) {
-    this._observeTermination = () => { func(this) }
+    this._observeTermination = func
     return this
   }
 }

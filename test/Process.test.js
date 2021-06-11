@@ -87,4 +87,12 @@ describe('Process', () => {
 
     return expect(notified.pid()).to.be.eq(expectedPid)
   })
+  it('should allow observing after is started', async () => {
+    let wasCalled = false
+
+    new Process('echo').start().onTermination(() => { wasCalled = true })
+    await termination()
+
+    return expect(wasCalled).to.be.true
+  })
 })

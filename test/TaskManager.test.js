@@ -18,11 +18,23 @@ describe('TaskManager', () => {
     return expect(manager.list()).not.to.be.empty
   })
   it('should track running processes only', () => {
-    const yetToStartedProcess = new ProcessTestDouble().readyToStart()
+    const yetToStartedProcess = new ProcessTestDouble().currentlyRunning(123)
 
     const manager = new TaskManager(TracingStrategy.alwaysAccept()).add(yetToStartedProcess)
+    yetToStartedProcess.kill()
 
     return expect(manager.list()).to.be.empty
+  })
+  it('should be robust to not tracked processes', () => {
+    const yetToStartedProcess = new ProcessTestDouble().currentlyRunning(123)
+    const anotherProcess = new ProcessTestDouble().currentlyRunning(345)
+
+    const manager = new TaskManager(TracingStrategy.fixedCapacity(1))
+      .add(yetToStartedProcess)
+      .add(anotherProcess)
+    anotherProcess.kill()
+
+    return expect(manager.list()).to.have.length(1)
   })
   it('should expose a list of processes', () => {
     const manager = new TaskManager()
