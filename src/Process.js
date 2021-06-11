@@ -1,18 +1,21 @@
 const { exec } = require('child_process')
 
+const subscribeToExit = object => callback => object._process.on('exit', callback)
+const signalIsNotRunning = object => () => { object._running = false }
+const accumulateOuput = object => (_, printedOutput) => { object._stdout = printedOutput }
+
 class Process {
   constructor (command) {
     this._command = command
     this._running = false
+    this._observeTermination = () => {}
   }
 
   start () {
-    this._process = exec(this._command, {}, (_, printedOutput) => {
-      this._stdout = printedOutput
-    })
-    this._process.on('exit', () => {
-      this._running = false
-    })
+    this._process = exec(this._command, {}, accumulateOuput(this))
+    const subscribe = subscribeToExit(this)
+    subscribe(signalIsNotRunning(this))
+    subscribe(this._observeTermination)
     this._running = true
     return this
   }
@@ -40,6 +43,11 @@ class Process {
 
   isRunning () {
     return this._running
+  }
+
+  onTermination (func) {
+    this._observeTermination = () => { func(this) }
+    return this
   }
 }
 

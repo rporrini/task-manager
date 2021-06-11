@@ -68,4 +68,23 @@ describe('Process', () => {
 
     return expect(runningProcess.isRunning()).to.be.false
   })
+
+  it('should provide an API to observe the process end event', async () => {
+    let wasCalled = false
+
+    new Process('echo').onTermination(() => { wasCalled = true }).start()
+    await termination()
+
+    return expect(wasCalled).to.be.true
+  })
+
+  it('should notify itself to the observer on termination', async () => {
+    const echo = new Process('echo')
+    let notified = {}
+
+    const expectedPid = echo.onTermination(process => { notified = process }).start().pid()
+    await termination()
+
+    return expect(notified.pid()).to.be.eq(expectedPid)
+  })
 })
