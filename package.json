@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "nyc mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "demo": "node src/Demo.js"
   },
   "repository": {
     "type": "git",
@@ -28,5 +29,8 @@
     "mocha": "^9.0.0",
     "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^15.1.0"
+  },
+  "nyc": {
+    "exclude": ["Demo.js","test/*"]
   }
 }
