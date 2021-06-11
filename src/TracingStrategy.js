@@ -3,6 +3,7 @@ const alwaysAccept = () => (processes, process) => {
 }
 
 const fixedCapacity = (capacity = 0) => (processes, process) => {
+  if (capacity === 0) return
   if (capacity === processes.length) return
   processes.push(process)
 }
